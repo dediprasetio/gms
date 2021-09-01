@@ -21,14 +21,42 @@ class Power_model extends CI_model
 	{
 		return $this->db->query("SELECT
                                     `sensor`,
-                                    DATE_FORMAT(`date`, \"%H:%i:%s\") as labels,
+									effective_date,
+                                    -- DATE_FORMAT(`effective_date`, \"%H:%i:%s\") as labels,
                                     voltage as `Voltage`,
                                     Current as `Current`
-                                FROM `data_listrik`
+                                FROM `log_data_listrik`
                                 where `sensor` = '" . $sensor . "'
                                 order by id DESC
-                                limit 30");
+                                limit 5");
 	}
+
+	public function getDataListrikBySensorOne($sensor)
+	{
+		return $this->db->query("SELECT
+                                    `sensor`,
+									now() effective_date,
+                                    -- DATE_FORMAT(`effective_date`, \"%H:%i:%s\") as labels,
+                                    voltage as `Voltage`,
+                                    Current as `Current`
+                                FROM `log_data_listrik`
+                                where `sensor` = '" . $sensor . "'
+                                order by id DESC
+                                limit 1");
+	}
+
+	// public function getDataListrikBySensorRows($sensor)
+	// {
+	// 	return $this->db->query("SELECT
+    //                                 `sensor`,
+    //                                 DATE_FORMAT(`date`, \"%H:%i:%s\") as labels,
+    //                                 voltage as `Voltage`,
+    //                                 Current as `Current`
+    //                             FROM `log_data_listrik`
+    //                             where `sensor` = '" . $sensor . "'
+    //                             order by id DESC
+    //                             limit 30");
+	// }
 
 	public function getDataPowerStatusSummary()
 	{

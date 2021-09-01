@@ -150,12 +150,14 @@ set_time_limit(0);
     }
 
     function all_power(){
+        // header('Content-Type: application/x-www-form-urlencoded');
+        // echo json_encode( $this->input->request_headers());exit;
         $validate_token = $this->validateToken();
         if ($validate_token['status'] == true) {
 
             //CHECK HTTP METHOD
             $method = $this->input->server('REQUEST_METHOD');
-            if ($method == "GET") {
+            if ($method == "POST") {
 
                 $getdata = json_decode(file_get_contents('php://input'));
 
@@ -178,16 +180,13 @@ set_time_limit(0);
                     }
 
                     //GET DATA LISTRIK ROWS
-                    $mySensorRows = $this->m_power->getDataListrikBySensorRows($_sensor);
-                    $data["datarow"][$phase] = $mySensorRows->result_array();
-                    // foreach ($mySensorRows->result_array() as $rows) {
-                    //     $data["datarow"][$phase]["voltage"][] = number_format($rows['Voltage'], 2, '.', ',');
-                    //     $data["datarow"][$phase]["Current"][] = number_format($rows['Current'], 2, '.', ',');
-                    //     $data["datarow"][$phase]["labels"][] = $rows['labels'];
-                    // }
-                    // $data["datarow"][$phase]["voltage"] = array_reverse($data["datarow"][$phase]["voltage"]);
-                    // $data["datarow"][$phase]["Current"] = array_reverse($data["datarow"][$phase]["Current"]);
-                    // $data["datarow"][$phase]["labels"] = array_reverse($data["datarow"][$phase]["labels"]);
+                    if($getdata->initialize == 0){
+                        $mySensorRows = $this->m_power->getDataListrikBySensorRows($_sensor);
+                        $data["datarow"][$phase] = $mySensorRows->result_array();
+                    }else{
+                        $mySensorRows = $this->m_power->getDataListrikBySensorOne($_sensor);
+                        $data["datarow"][$phase] = $mySensorRows->result_array();
+                    }
                 }
 
                 $myData = array(
@@ -218,4 +217,6 @@ set_time_limit(0);
                 ->set_output(json_encode($dataArray));
         }
     }
+
+
 }
